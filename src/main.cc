@@ -8,18 +8,16 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
-#include "img_hash/AverageHash.h"
-#include "img_hash/BlockMeanHash.h"
-#include "img_hash/PerceptualHash.h"
-#include "img_hash/PerceptualHash_Fast.h"
+#include "PerceptualHash.h"
+#include "PerceptualHash_Fast.h"
 
-//#include "img_hash/FragmentHash.h"
+//#include "FragmentHash.h"
 //#include "ShapeAndPositionInvariantImage.h"
 #include "Triangle.h"
 #include "mainImageProcessingFunctions.hpp"
 #include <boost/program_options.hpp>
 #include <iostream>
-#include "utils/utils.hpp"
+#include "utils.hpp"
 #include "hiredis/hiredis.h"
 #include <map>
 

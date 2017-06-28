@@ -33,6 +33,7 @@
 
 ./CMakeFiles/
 ./CMakeFiles/*
+./CMakeFiles/**
 
 ./CMakeLists.txt
 ./inputImages/*

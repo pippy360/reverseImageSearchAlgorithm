@@ -12,9 +12,7 @@
 #include <time.h>       /* time */
 #include <math.h>
 
-#include "img_hash/AverageHash.h"
-#include "img_hash/BlockMeanHash.h"
-#include "img_hash/PerceptualHash.h"
+#include "PerceptualHash.h"
 
 #include "Triangle.h"
 #include "mainImageProcessingFunctions.hpp"
@@ -22,7 +20,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <iostream>
-#include "utils/utils.hpp"
+#include "utils.hpp"
 #include <tuple>
 
 using boost::property_tree::ptree;

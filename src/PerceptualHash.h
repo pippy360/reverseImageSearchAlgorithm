@@ -4,10 +4,12 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <iomanip>
+
 #include "opencv2/opencv.hpp"
 #include "Keypoint.h"
 #include "FragmentHash.h"
-#include "img_hash/img_hash_opencv_module/phash.hpp"
+#include "img_hash_opencv_module/phash.hpp"
 using namespace std;
 
 
