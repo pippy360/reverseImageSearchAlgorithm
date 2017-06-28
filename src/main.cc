@@ -26,7 +26,7 @@ using namespace std;
 void addAllHashesToRedis(string imageName){
     vector<Triangle> tris = getTriangles("../inputImages/"+imageName+"/keypoints.json");
     auto loadedImage = getLoadedImage("../inputImages/"+imageName+"/"+imageName+".jpg");
-    auto hashTrianglePairs = cv::getAllTheHashesForImage<hashes::PerceptualHash>(loadedImage, tris, "../inputImages/"+imageName+"/outputFragments", "1");
+    auto hashTrianglePairs = cv::getAllTheHashesForImage<hashes::PerceptualHash>(loadedImage, tris);
 
     redisContext *c;
 //    redisReply *reply;
@@ -55,7 +55,7 @@ void addAllHashesToRedis(string imageName){
 int findMatchingHashInRedis(string imageName){
     vector<Triangle> tris = getTriangles("../inputImages/"+imageName+"/keypoints.json");
     auto loadedImage = getLoadedImage("../inputImages/"+imageName+"/"+imageName+".jpg");
-    auto hashTrianglePairs = cv::getAllTheHashesForImage<hashes::PerceptualHash>(loadedImage, tris, "../inputImages/"+imageName+"/outputFragments", "1");
+    auto hashTrianglePairs = cv::getAllTheHashesForImage<hashes::PerceptualHash>(loadedImage, tris);
 
     redisContext *c;
     redisReply *reply;

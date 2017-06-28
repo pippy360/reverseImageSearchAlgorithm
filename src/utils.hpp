@@ -47,7 +47,7 @@ cv::Mat convertKeypointsVectorToMat(vector<Keypoint> kps)
 vector<Keypoint> convertMatToKeypointsVector(cv::Mat inputPoints)
 {
 	vector<Keypoint> ret;
-	for (unsigned int i = 0; i < inputPoints.cols; i++)
+	for (unsigned int i = 0; i < (unsigned int) inputPoints.cols; i++)
 	{
 		double x = inputPoints.at<double>(0, i);
 		double y = inputPoints.at<double>(1, i);
@@ -277,14 +277,13 @@ const vector<T> readJsonHashesFile(std::ifstream *file)
 					}
 					else if (label1.first == "hashes") {
 						for (auto hash_item : label1.second) {
-							ret.push_back(T(hash_item.second.get_value<std::string>()))
+							ret.push_back(T(hash_item.second.get_value<std::string>()));
 						}
 					}
 				}
 			}
 		}
 
-		print(pt);
 	}
 	catch (std::exception const &e) {
 		std::cerr << e.what() << std::endl;

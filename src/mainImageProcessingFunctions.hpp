@@ -111,7 +111,7 @@ namespace cv
 
 	Matx33d calcTransformationMatrixWithShapePreperation(const std::vector<Keypoint>& inputTriangle, const std::vector<Keypoint>& targetTriangle, int shift)
 	{
-		auto newShape = prepShapeForCalcOfTransformationMatrixWithShift(inputTriangle, targetTriangle, shift)
+		auto newShape = prepShapeForCalcOfTransformationMatrixWithShift(inputTriangle, targetTriangle, shift);
 		return calcTransformationMatrix(newShape, targetTriangle);
 	}
 
