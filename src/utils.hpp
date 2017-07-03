@@ -71,7 +71,7 @@ vector<Keypoint> readKeypointsFromJsonFile(string filename);
 vector<Keypoint> getKeypoints(cv::Mat inputImage)
 {
 	cv::imwrite("tempImage.jpg", inputImage);
-	FILE* file = popen("python ./python_src/dumpKeypointsToJson.py ./tempImage.jpg ./tempOutputKeypoints.json", "r");
+	FILE* file = popen("python ./dumpKeypointsToJson.py ./tempImage.jpg ./tempOutputKeypoints.json", "r");
 	pclose(file);
 	return readKeypointsFromJsonFile("./tempOutputKeypoints.json");
 }
