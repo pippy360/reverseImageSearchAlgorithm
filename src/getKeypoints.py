@@ -228,16 +228,34 @@ def dumpExcludeList(exList, outputFile):
 		f.write( ex + '\n' )
 
 def main():
-    import os
-    from shutil import copyfile
-    import sys
-    if len(sys.argv) < 3:
-        print("you need to pass in an image path!!!! and also an output path for the json")
-        return -1
+	import os
+	from shutil import copyfile
 
-    print sys.argv[1] + " : " + sys.argv[2]
-    img = cv2.imread(sys.argv[1])
-    dumpKeypoints(img, sys.argv[2])
+	# imageName = sys.argv[1]
+	# imagePath = "./input/" + imageName + ".jpg"
+	# print getTheKeyPoints(cv2.imread(imagePath))
+
+	f = open("inputImages/imageNames.txt",'w+')
+	for item in items:
+		f.write( item['imgName'] + '\n' )
+
+	for item in items:
+		fullPath = toFullPath(item["imgName"])
+		img = cv2.imread(fullPath)
+		directory = 'inputImages/'+ item["imgName"]
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+		ignoreMe_directory = 'inputImages/'+ item["imgName"] + '/outputFragments'
+		if not os.path.exists(ignoreMe_directory):
+			os.makedirs(ignoreMe_directory)
+		copyfile(fullPath, directory+"/"+item["imgName"]+'.jpg')
+		print fullPath + " : " + directory+"/"+item["imgName"]+'.jpg'
+		#print item['imgName'] + " matches: " + img.imageName
+		outputFile = directory + '/keypoints2.json'
+		dumpKeypoints(img, outputFile)
+		outputFile = directory + '/excludeList.txt'
+		dumpExcludeList(item["excludeList"], outputFile)
+		#os.system("./app dumpRandom "+item["imgName"])
 
 
 
