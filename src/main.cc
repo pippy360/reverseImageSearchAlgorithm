@@ -23,9 +23,12 @@
 
 using namespace std;
 
-void addAllHashesToRedis(string imageName){
-    vector<Triangle> tris = getTriangles("../inputImages/"+imageName+"/keypoints.json");
-    auto loadedImage = getLoadedImage("../inputImages/"+imageName+"/"+imageName+".jpg");
+void addAllHashesToRedis(string imagePath){
+    //compute the keypoints
+    //get the tris from keypoints
+    auto loadedImage = getLoadedImage(imagePath);
+    vector<Keypoint> keypoints = getKeypoints(loadedImage.getImageData());
+    vector<Triangle> tris = buildTrianglesFromKeypoints(keypoints, 50, 400);;
     auto hashTrianglePairs = cv::getAllTheHashesForImage<hashes::PerceptualHash>(loadedImage, tris);
 
     redisContext *c;
@@ -47,7 +50,7 @@ void addAllHashesToRedis(string imageName){
 
     for (auto hashTriangle : hashTrianglePairs)
     {
-        string redisEntry = convertToRedisEntryJson(imageName, hashTriangle.first);
+        string redisEntry = convertToRedisEntryJson(imagePath, hashTriangle.first);
         redisCommand(c,"SADD %s %s", hashTriangle.second.toString().c_str(), redisEntry.c_str());
     }
 }
