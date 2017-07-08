@@ -30,6 +30,22 @@ using boost::property_tree::write_json;
 namespace pt = boost::property_tree;
 using namespace std;
 
+static unsigned long x=123456789, y=362436069, z=521288629;
+
+unsigned long xorshf96(void) {          //period 2^96-1
+    unsigned long t;
+    x ^= x << 16;
+    x ^= x >> 5;
+    x ^= x << 1;
+
+    t = x;
+    x = y;
+    y = z;
+    z = t ^ x ^ y;
+
+    return z;
+}
+
 cv::Mat convertKeypointsVectorToMat(vector<Keypoint> kps)
 {
 	cv::Mat ret = cv::Mat::zeros(3, kps.size(), CV_64F);
@@ -57,6 +73,33 @@ vector<Keypoint> convertMatToKeypointsVector(cv::Mat inputPoints)
 	return ret;
 }
 
+void drawSingleTriangleOntoImage(Triangle tri, cv::Mat inputImage, bool setColour = false, cv::Scalar colourInput = cv::Scalar(0,0,0)){
+    auto keypoints = tri.toKeypoints();
+    auto prevPoint = keypoints.back();
+//    for (auto currentPoint: keypoints)
+//    {
+    int r = (int) xorshf96();
+    int g = (int) xorshf96();
+    int b = (int) xorshf96();
+    for (int i = 0; i < 3; i++){
+        auto currentPoint = keypoints[i];
+        auto colour = (setColour)? colourInput: cv::Scalar(b,g,r);
+
+        cv::line(inputImage, cv::Point(prevPoint.x, prevPoint.y), cv::Point(currentPoint.x, currentPoint.y),
+                 colour);
+        //cv::imshow("something", inputImage);
+        //cv::waitKey(10);
+        prevPoint = currentPoint;
+    }
+}
+
+
+void drawTrianglesOntoImage(vector<Triangle> tris, cv::Mat inputImage, bool randomColours = true)
+{
+    for (auto tri: tris){
+        drawSingleTriangleOntoImage(tri, inputImage, randomColours);
+    }
+}
 
 vector<Keypoint> applyTransformationMatrixToKeypointVector(vector<Keypoint> keypoints, cv::Mat transformationMat)
 {

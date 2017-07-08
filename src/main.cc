@@ -24,8 +24,6 @@
 using namespace std;
 
 void addAllHashesToRedis(string imagePath){
-    //compute the keypoints
-    //get the tris from keypoints
     auto loadedImage = getLoadedImage(imagePath);
     vector<Keypoint> keypoints = getKeypoints(loadedImage.getImageData());
     vector<Triangle> tris = buildTrianglesFromKeypoints(keypoints, 50, 400);;
@@ -56,8 +54,9 @@ void addAllHashesToRedis(string imagePath){
 }
 
 int findMatchingHashInRedis(string imageName){
-    vector<Triangle> tris = getTriangles("../inputImages/"+imageName+"/keypoints.json");
-    auto loadedImage = getLoadedImage("../inputImages/"+imageName+"/"+imageName+".jpg");
+    auto loadedImage = getLoadedImage(imageName);
+    vector<Keypoint> keypoints = getKeypoints(loadedImage.getImageData());
+    vector<Triangle> tris = buildTrianglesFromKeypoints(keypoints, 50, 400);;
     auto hashTrianglePairs = cv::getAllTheHashesForImage<hashes::PerceptualHash>(loadedImage, tris);
 
     redisContext *c;
@@ -112,20 +111,20 @@ int findMatchingHashInRedis(string imageName){
         resultMap[redisReplyImageName];
         resultMap[redisReplyImageName].push_back(redisReplyTriangle);
     }
-//    cout << "Matches:" << endl;
-//    for(auto const& ent1 : resultMap)
-//    {
-//        if(ent1.first == imageName){
-//            continue;
-//        }
-//        auto tempImg = cv::imread("../inputImages/"+ent1.first+"/"+ent1.first+".jpg");
-//        drawTrianglesOntoImage(ent1.second, tempImg);
-//        cv::imwrite("../outputFromSearch_"+ent1.first+".jpg", tempImg);
-//
-//        cout << ent1.first << ": " << ent1.second.size() << endl;
-//    }
-//
-//    cout << "Number of matches: " << result.size() << endl;
+    cout << "Matches:" << endl;
+    for(auto const& ent1 : resultMap)
+    {
+        if(ent1.first == imageName){
+            continue;
+        }
+        auto tempImg = cv::imread("../inputImages/"+ent1.first+"/"+ent1.first+".jpg");
+        drawTrianglesOntoImage(ent1.second, tempImg);
+        cv::imwrite("../outputFromSearch_"+ent1.first+".jpg", tempImg);
+
+        cout << ent1.first << ": " << ent1.second.size() << endl;
+    }
+
+    cout << "Number of matches: " << result.size() << endl;
     return result.size();
 }
 
@@ -171,14 +170,9 @@ int main(int argc, char* argv[])
 
     string imageName = (argc > 2)? argv[2]: "img1";
 
-    if (argc > 2 && !strcmp(argv[1], "dumpRandom")){
-        cout << "Dumping image hashes for: " << imageName << endl;
-    }else if (argc > 3 && !strcmp(argv[1], "compareTwoImages")){
-        string imageName2 = argv[3];
-        compareTwoImages(imageName, imageName2);
-    }else if (argc > 2 && !strcmp(argv[1], "addRedisImage")){
+    if (argc > 2 && !strcmp(argv[1], "insert")){
         addAllHashesToRedis(imageName);
-    }else if (argc > 2 && !strcmp(argv[1], "checkRedisImage")){
+    }else if (argc > 2 && !strcmp(argv[1], "lookup")){
         findMatchingHashInRedis(imageName);
     }else{
         cout << "Bad argument: " << argv[1] << endl;
