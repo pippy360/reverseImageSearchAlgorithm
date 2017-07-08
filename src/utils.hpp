@@ -76,8 +76,7 @@ vector<Keypoint> convertMatToKeypointsVector(cv::Mat inputPoints)
 void drawSingleTriangleOntoImage(Triangle tri, cv::Mat inputImage, bool setColour = false, cv::Scalar colourInput = cv::Scalar(0,0,0)){
     auto keypoints = tri.toKeypoints();
     auto prevPoint = keypoints.back();
-//    for (auto currentPoint: keypoints)
-//    {
+    
     int r = (int) xorshf96();
     int g = (int) xorshf96();
     int b = (int) xorshf96();
@@ -97,7 +96,7 @@ void drawSingleTriangleOntoImage(Triangle tri, cv::Mat inputImage, bool setColou
 void drawTrianglesOntoImage(vector<Triangle> tris, cv::Mat inputImage, bool randomColours = true)
 {
     for (auto tri: tris){
-        drawSingleTriangleOntoImage(tri, inputImage, randomColours);
+        drawSingleTriangleOntoImage(tri, inputImage, !randomColours);
     }
 }
 
@@ -243,7 +242,7 @@ vector<Triangle> buildTrianglesForSingleKeypoint(Keypoint centerKeypoint, vector
 					continue;
 				}
 				Triangle testingTri(centerKeypoint, iterKeypoint, finKp);
-				if (testingTri.calcArea() > 200){
+				if (testingTri.calcArea() > 1300){
 					result.push_back(testingTri);
 				}
 			}
