@@ -298,8 +298,9 @@ vector<Triangle> getTriangles(string filename)
 
 ShapeAndPositionInvariantImage getLoadedImage(string imageFullPath) 
 {
-	cout << "Loading image: " << imageFullPath << endl;
+	cout << "Loading image: " << imageFullPath;
 	cv::Mat img = cv::imread(imageFullPath);
+	cout << " ... done" << endl;
 	return ShapeAndPositionInvariantImage("", img, std::vector<Keypoint>(), "");
 }
 

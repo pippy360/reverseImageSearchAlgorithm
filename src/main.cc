@@ -46,11 +46,15 @@ void addAllHashesToRedis(string imagePath){
         exit(1);
     }
 
+    int count = 0;
     for (auto hashTriangle : hashTrianglePairs)
     {
         string redisEntry = convertToRedisEntryJson(imagePath, hashTriangle.first);
         redisCommand(c,"SADD %s %s", hashTriangle.second.toString().c_str(), redisEntry.c_str());
+
+	count++;
     }
+    cout << "Added " << count << " fragments to DB" << endl;
 }
 
 int findMatchingHashInRedis(string imageName){
@@ -114,12 +118,13 @@ int findMatchingHashInRedis(string imageName){
     cout << "Matches:" << endl;
     for(auto const& ent1 : resultMap)
     {
-        if(ent1.first == imageName){
-            continue;
-        }
-        auto tempImg = cv::imread("../inputImages/"+ent1.first+"/"+ent1.first+".jpg");
+	//filter out the same image if it's in the database
+//        if(ent1.first == imageName){
+//            continue;
+//        }
+        auto tempImg = cv::imread(ent1.first);
         drawTrianglesOntoImage(ent1.second, tempImg);
-        cv::imwrite("../outputFromSearch_"+ent1.first+".jpg", tempImg);
+        cv::imwrite("./outputImages/outputFromSearch_"+ent1.second[0].toString()+".jpg", tempImg);
 
         cout << ent1.first << ": " << ent1.second.size() << endl;
     }
@@ -168,12 +173,17 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    string imageName = (argc > 2)? argv[2]: "img1";
 
     if (argc > 2 && !strcmp(argv[1], "insert")){
-        addAllHashesToRedis(imageName);
+	for (int i = 2; i < argc; i++) {
+    		string imageName = argv[i];
+        	addAllHashesToRedis(imageName);
+	}
     }else if (argc > 2 && !strcmp(argv[1], "lookup")){
-        findMatchingHashInRedis(imageName);
+	for (int i = 2; i < argc; i++) {
+    		string imageName = argv[i];
+        	findMatchingHashInRedis(imageName);
+	}
     }else{
         cout << "Bad argument: " << argv[1] << endl;
     }
