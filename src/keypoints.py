@@ -8,8 +8,6 @@ import pylab
 from numpy import sin,pi,linspace
 from pylab import plot,show,subplot, axhline, axis, axes
 from scipy.signal import argrelextrema
-#import plotting
-####### gen points ########
 
 g_name = 'REPLACE_ME'
 g_enable_plotting = True
@@ -25,10 +23,6 @@ g_numberOfPixelsPerUnit = 1
 #debug
 g_plotVelocity = True
 g_dividerForPts = 1
-
-#pts = [(0,0),(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]
-#pts = [(0,0),(1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10)]
-#pts = [(0,0**2),(1,1**2),(2,2**2),(3,3**2),(4,4**2),(5,5**2),(6,6**2),(7,7**2),(8,8**2),(9,9**2),(10,10**2)]
 
 def PointsInCircum(r,n=100):
     return [(math.cos(2*pi/n*x)*r,math.sin(2*pi/n*x)*r) for x in xrange(0,n+1)]
@@ -50,49 +44,6 @@ def thatCurve(a=9, b=6, noOfPoints=200):
 	for i in range(len(x)):
 		ret.append( (x[i], y[i]) )
 	return ret
-
-#####################################
-####### plots points ########
-#####################################
-def plotOneFuncVsOrgPoints(tList, fx_t, org_x):
-	if not g_enable_plotting:
-		return 
-	#PLOT 
-	plot(tList, org_x, 'x', color="red")
-	plot(tList, fx_t(tList), 'b', color="blue")
-	show()
-	#PLOT
-
-def plotTwoFuncsVsOrgPoints(tList, fx_t, org_x, fy_t, org_y):
-	if not g_enable_plotting:
-		return 
-	#PLOT 
-	subplot(211)
-	plot(tList, org_x, 'x', color="red")
-	plot(tList, fx_t(tList), 'b', color="blue")
-	subplot(212)
-	plot(tList, org_y, 'x', color="red")
-	plot(tList, fy_t(tList), 'b', color="blue")
-	#plot(fx_t(tList), fy_t(tList), 'b', color="blue")
-	show()
-	#PLOT
-
-def randomPlot1(org_x, org_y, arcLengthList, fx_s, fy_s):
-	if not g_enable_plotting:
-		return 
-	#PLOT 
-#	subplot(411)
-#	plot(org_x, org_y, 'b', color="blue")
-#	subplot(412)
-#	plot(arcLengthList, org_x, 'x', color="red")
-#	plot(arcLengthList, fx_s(arcLengthList), 'b', color="blue")
-#	subplot(413)
-#	plot(arcLengthList, org_y, 'x', color="red")
-#	plot(arcLengthList, fy_s(arcLengthList), 'b', color="blue")
-#	subplot(414)
-#	plot(fx_s(arcLengthList), fy_s(arcLengthList), 'b', color="blue")
-#	show()
-	#PLOT
 
 def plotVelocity(t_pts, v_pts):
 	plot(t_pts, v_pts)
@@ -170,15 +121,8 @@ def arcLengthAllTheWayToT(tList, fx_t, fy_t, noOfPoints=100, subDivide=g_divider
 			next_all_y_vals.append(all_y_vals[i*subDivide])
 
 	all_y_vals = next_all_y_vals
-#	if g_plotVelocity:
-#		plotVelocity(all_x_vals, all_y_vals)
-	
-#	print "len(all_x_vals)"
-#	print len(all_x_vals)
-#	print len(all_y_vals)
 
 	vals = cumtrapz(all_y_vals, all_x_vals, initial=0)
-#	print vals
 	return vals
 
 def convertTListToArcLengthList(tList, fx_t, fy_t):
@@ -352,23 +296,10 @@ def _parameterizeFunctionWRTArcLength(org_x, org_y):
 	tList = np.arange(org_x.shape[0])
 	fx_t, fy_t = getParameterizedFunctionFromPoints(tList, org_x, org_y, smoothing=g_SmoothingForParameterization_t)
 
-	#PLOT 
-	#plotTwoFuncsVsOrgPoints(tList, fx_t, org_x, fy_t, org_y)
-	#PLOT
-
 	arcLengthList, fx_s, fy_s = reParameterizeFunctionFromPoints(convertTListToArcLengthList_old, tList, fx_t, fy_t, smoothing=g_SmoothingForParameterization_s)
-	
-	#PRINT DEBUG
-	#randomPrint1(arcLengthList, org_x, org_y, fx_s, fy_s)
-	#randomPlot1(org_x, org_y, arcLengthList, fx_s, fy_s)
-	#PRINT DEBUG
 	
 	arcLengthList = newArcLengthList(arcLengthList, fx_s, fy_s)
 	x, x_, x__, y, y_, y__ = getFirstAndSecondDerivForTPoints(arcLengthList, fx_s, fy_s)
-
-	#PRINT DEBUG
-	#printTheDerivativesError(x_, y_)
-	#PRINT DEBUG
 	
 	curvature, dxcurvature, dx2curvature = getCurvatureForPoints(arcLengthList, fx_s, fy_s, smoothing=g_SmoothingForDeltaCurvature)
 
@@ -379,11 +310,6 @@ def genImages2(retX, retY):
 
 def genImagesWithDisplayFix(pts, numberOfPixelsPerUnit=g_numberOfPixelsPerUnit):
 	org_x, org_y = pts[:, 0], pts[:, 1]
-#	org_y = org_y[600:800]
-#	org_x = org_x[600:800]
-
-#	plot(org_x,org_y)
-#	show()
 
 	if g_cullPoints:
 		org_x, org_y, junk = getSimplePts(pts)
@@ -419,19 +345,7 @@ def genImagesWithDisplayFix(pts, numberOfPixelsPerUnit=g_numberOfPixelsPerUnit):
 			pt = (temp2[i], temp3[i])
 			fin_pts.append(pt)
 
-#	plot(s, curvature, 'b', color='b')
-#	plot(temp2, temp3, 'b', color='b')
-	#plot(fx_s(finalVals), fy_s(finalVals), 'ro', color='r')
-	#plot(temp4, temp, 'ro', color='r')
-	
-#	plot(xs, ys, 'b', color='b')
-#	plot(temp2, temp3, 'ro', color='r')
-#	show()
 
-#	for i in range(len(dx2curvature)):
-#		plotting.plotItAtIndex(xs, ys, dxdt, dydt, d2xdt, d2ydt, s, curvature, dxcurvature, dx2curvature, i, fullLength_s)
-
-	#return fin_pts
 	return [temp2], [temp3]
 
 def genImages(pts):
@@ -444,12 +358,6 @@ def genImages(pts):
 
 	dx2curvature = abs(dx2curvature)
 	maxm = argrelextrema(dx2curvature, np.greater)  # (array([1, 3, 6]),)
-#	print "maxm"
-#	print dx2curvature
-#	print maxm
-
-	#for i in range(len(dx2curvature)):
-	#	plotting.plotItAtIndex(xs, ys, dxdt, dydt, d2xdt, d2ydt, s, curvature, dxcurvature, dx2curvature, i, fullLength_s)
 
 	coordsx = []
 	coordsy = []
@@ -457,35 +365,8 @@ def genImages(pts):
 		coordsx.append(xs[val])
 		coordsy.append(ys[val])
 
-	#plot(xs, ys)
-	#plot(np.array(coordsx), np.array(coordsy), 'ro', color="red")
-	#show()
 	return coordsx, coordsy
-	#peakind = signal.find_peaks_cwt(dxcurvature, s)
-	#peakind = signal.find_peaks_cwt(data, xs2)
-	#for i in range(len(s)):
-	#	#pylab.plot(xs, ys, 'b', color="blue")
-	#	pylab.axhline(0, color='black')
-	#	plotting.plotItAtIndex(xs, ys, dxdt, dydt, d2xdt, d2ydt, s, curvature, dxcurvature, dx2curvature, i)
-	
 
 
 
-#pts = PointsInCircum(50,8)
-#pts = ns.shape7
-
-#pts = thatCurve()
-##print breakUpFullLengthOfArcIntoXPoints(10, 10, True)
-##print getEqidistantPointsAlongFunction(np.array(pts))
-##fx, fy, fullLength = parameterizeFunctionWRTArcLength(np.array(pts))
-
-#pts = np.multiply(pts, 100)
-#for key, value in ns.shapes.iteritems():
-#	g_name = key
-#	pts = np.array(value)
-#	genImagesWithDisplayFix(pts)
-
-#pts = ns.shapes['shape4']
-#pts = [(0,0),(1,0),(2,0),(3,0),(4,0),(0,4),(0,3),(0,2),(0,1)]
-#print genImagesWithDisplayFix(np.array(pts))
 	

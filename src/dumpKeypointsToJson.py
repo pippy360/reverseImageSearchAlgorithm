@@ -3,31 +3,22 @@ import cv2
 import keypoints as kp
 import sys
 
-def getTheKeypoints_justPoints_inner(img):
+def computeKeypoints(img):
 	gaussW = 21
-	#img2 = img.copy()
 	img = recolour(img, gaussW)
-
 	b, g, r = cv2.split(img)
-	#img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-	img = b
-	#cv2.imshow('b',b)
-	#cv2.waitKey()
 	points1 = []
-	points1.extend(getTheKeypoints_justPoints_inner_inner(b))
-#	points1.extend(getTheKeypoints_justPoints_inner_inner(g, img2))
-#	points1.extend(getTheKeypoints_justPoints_inner_inner(r, img2))
+	points1.extend(computeKeypoints_internal(b))
+	#points1.extend(computeKeypoints_internal(g))
+	#points1.extend(computeKeypoints_internal(r))
 	return points1
 
 
-
-def getTheKeypoints_justPoints_inner_inner(channel):
-	img = channel
+def computeKeypoints_internal(singleChannelImage):
+	img = singleChannelImage
 	ret,img = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
 	
-	#img2 = img.copy()
-#	cv2.imshow('here..'+str(img.shape), img2)
-#	cv2.waitKey()
+	img2 = img.copy()
 	contours, hierarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 	
 	finCnts = []
@@ -46,42 +37,25 @@ def getTheKeypoints_justPoints_inner_inner(channel):
 		cY = int(M["m01"] / M["m00"])
 		finCnts.append( (cX, cY) )
 
-
-	#for i in range(len(contours)):
-	#	cv2.drawContours(img2, contours, i, (0,0,255), 1)
-	#	cv2.circle(img2, finCnts[i], 3, (255, 0, 0), -1)
-
-	#print "len(contours):" + str(len(contours))
 	for i in range(len(contours)):
-		#continue
 		cnt = contours[i]
-		#print "cnt"
-		#print cnt
 		ret = []
 		for pnt in cnt:
 			pt = pnt[0]
 			ret.append( (pt[0], pt[1]) )
 
-		#print ret
 		xcoords, ycoords = kp.genImagesWithDisplayFix( np.array(ret) )
-	#		print "shape"+str(i)+" = " + str(ret)
-		#print xcoords[0]
-		#print ycoords[0]
 
 		for i in range(len(xcoords[0])):
-			#cv2.circle(img2, ( int(xcoords[0][i]), int(ycoords[0][i]) ), 3, (255, 0, 0), -1)
+			cv2.circle(img2, ( int(xcoords[0][i]), int(ycoords[0][i]) ), 3, (255, 0, 0), -1)
 			xs = xcoords[0][i]
 			ys = ycoords[0][i]
 			finCnts.append( (xs, ys) )
-	#import time		
-	#cv2.imshow('t1'+str(time.time()), img2)
+	import time		
+	cv2.imwrite('t1'+str(time.time())+".jpg", img2)
 	
-	print "Number of keypoints: " + str(len(finCnts))
 	return finCnts
-	# if len(finCnts) > 200:
-	# 	return finCnts[0:200]
-	# else:
-	# 	return finCnts
+
 
 g_pixelVals = [16, 124, 115, 68, 98, 176, 225, 
 55, 50, 53, 129, 19, 57, 160, 143, 237, 75, 164, 
@@ -136,74 +110,11 @@ def recolour(img, gaussW=41):
 			img2[i,j] = threeVal
 
 	return img2
-#	cv2.imwrite(imgName + 'blur' + str(gaussW) + '_lenna_big_diff_cols.png', img2)
-	#cv2.waitKey()
-
-def getTheKeyPoints(img):
-	return getTheKeypoints_justPoints_inner(img)
-
-
-items = [
-	#	{'imgName': "img2", 'excludeList': ["img1"]},
-	{'imgName': "lennaWithGreenDots", 'excludeList': []},
-	{'imgName': "2f95f3e1294c759ec23c8e6a21bb2cca", 'excludeList': []},
-	{'imgName': "moderat-bad-kingdom", 'excludeList': []},
-	{'imgName': "mountains_orginal_dots", 'excludeList': []},
-	{'imgName': "Moderat-Bad-Kingdom", 'excludeList': []},
-	{'imgName': "Moderat-Bad-Kingdom6_2", 'excludeList': []},
-	{'imgName': "Moderat-Bad-Kingdom_1", 'excludeList': []},
-	{'imgName': "Moderat-Bad-Kingdom-10", 'excludeList': []},
-	{'imgName': "rick1", 'excludeList': ["rick3", "rick2"]},
-	{'imgName': "rick2", 'excludeList': ["rick1", "rick3"]},
-	{'imgName': "rick3", 'excludeList': ["rick1", "rick2"]},
-	{'imgName': "rick_crop_1", 'excludeList': ["rick1", "rick2"]},
-	{'imgName': "rick_crop_2", 'excludeList': ["rick1", "rick2"]},
-	{'imgName': "rick_crop_3", 'excludeList': ["rick1", "rick2"]},
-	{'imgName': "rick_crop_4", 'excludeList': ["rick1", "rick2"]},
-	{'imgName': "rick_crop_5", 'excludeList': ["rick1", "rick2"]},
-	{'imgName': "rick_full_1", 'excludeList': ["rick1", "rick2"]},
-	{'imgName': "rick_full_2", 'excludeList': ["rick1", "rick2"]},
-	{'imgName': "upload02", 'excludeList': []},
-	{'imgName': "_vector__natsu_and_happy___ninjas__by_coolez-d89c2au", 'excludeList': []},
-	{'imgName': "dots", 'excludeList': ["img1", "img2", "costanza_changed"]},
-	{'imgName': "costanza_changed", 'excludeList': ["dots", "img1", "img2"]},
-	{'imgName': "lennaWithGreenDotsInTriangle", 'excludeList': []},
-	{'imgName': "lennaWithGreenDotsInTriangle1", 'excludeList': []},
-	{'imgName': "lennaWithGreenDotsInTriangle2", 'excludeList': []},
-	{'imgName': "lennaWithGreenDotsInTriangle3", 'excludeList': []},
-	{'imgName': "small_lenna1", 'excludeList': []},
-	{'imgName': "small_lenna2", 'excludeList': []},
-	{'imgName': "small_lenna3", 'excludeList': []},
-	{'imgName': "small_lenna4", 'excludeList': []},
-	{'imgName': "testImage1", 'excludeList': []},
-	{'imgName': "testImage2", 'excludeList': []},
-	{'imgName': "small_lenna4", 'excludeList': []},
-	{'imgName': "img2", 'excludeList': ["dots", "img1", "costanza_changed"]},
-	{'imgName': "img1", 'excludeList': ["img2", "dots", "costanza_changed"]}
-]
-
-
-# {
-# 	"output":
-# 		{
-# 			"keypoints":
-# 				[
-# 					{
-# 						"x" : 200.4,
-# 						"y" : 100.1
-# 					},
-# 					{
-# 						"x" : 123.4,
-# 						"y" : 456.1
-# 					}
-# 				]
-# 		}
-# }
 
 
 def dumpKeypoints(img, filename):
 	import json
-	kps = getTheKeyPoints(img)
+	kps = computeKeypoints(img)
 	calcdKeypoints = []
 	for kp in kps:
 		tempObj = {}
@@ -218,27 +129,17 @@ def dumpKeypoints(img, filename):
 	f = open(filename,'w+')
 	f.write( json.dumps(output) )
 
-def toFullPath(imgName):
-	return "input/"+imgName+".jpg"
-
-
-def dumpExcludeList(exList, outputFile):
-	f = open(outputFile,'w+')
-	for ex in exList:
-		f.write( ex + '\n' )
 
 def main():
-    import os
-    from shutil import copyfile
-    import sys
-    if len(sys.argv) < 3:
-        print("you need to pass in an image path!!!! and also an output path for the json")
-        return -1
+	import os
+	from shutil import copyfile
+	import sys
+	if len(sys.argv) < 3:
+		print("you need to pass in an image path!!!! and also an output path for the json")
+		return -1
 
-    print sys.argv[1] + " : " + sys.argv[2]
-    img = cv2.imread(sys.argv[1])
-    dumpKeypoints(img, sys.argv[2])
-
-
+	print sys.argv[1] + " : " + sys.argv[2]
+	img = cv2.imread(sys.argv[1])
+	dumpKeypoints(img, sys.argv[2])
 
 main()

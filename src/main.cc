@@ -108,9 +108,6 @@ int findMatchingHashInRedis(string imageName){
     for (auto t_str : result)
     {
         auto redisReplyImageName = getImageNameFromRedisEntry(t_str);
-        if(redisReplyImageName == imageName){
-            continue;
-        }
         auto redisReplyTriangle = getTriangleFromRedisEntry(t_str);
         resultMap[redisReplyImageName];
         resultMap[redisReplyImageName].push_back(redisReplyTriangle);
@@ -118,14 +115,9 @@ int findMatchingHashInRedis(string imageName){
     cout << "Matches:" << endl;
     for(auto const& ent1 : resultMap)
     {
-	//filter out the same image if it's in the database
-//        if(ent1.first == imageName){
-//            continue;
-//        }
         auto tempImg = cv::imread(ent1.first);
-        drawTrianglesOntoImage(ent1.second, tempImg);
-        cv::imwrite("./outputImages/outputFromSearch_"+ent1.second[0].toString()+".jpg", tempImg);
-
+        //drawTrianglesOntoImage(ent1.second, tempImg);
+        //cv::imwrite("./outputImages/outputFromSearch_"+ent1.second[0].toString()+".jpg", tempImg);
         cout << ent1.first << ": " << ent1.second.size() << endl;
     }
 
