@@ -76,7 +76,7 @@ def getCurvatureForPoints(arcLengthList, fx_s, fy_s, smoothing=None):
 	fCurvature = UnivariateSpline(arcLengthList, curvature, s=smoothing)
 	return curvature
  
-def _parameterizeFunctionWRTArcLength(org_x, org_y):
+def parameterizeFunctionWRTArcLength(org_x, org_y):
 		
 	tList = np.arange(org_x.shape[0])
 	fx_t, fy_t = getParameterizedFunctionFromPoints(tList, org_x, org_y, smoothing=g_SmoothingForParameterization_t)
@@ -87,7 +87,7 @@ def _parameterizeFunctionWRTArcLength(org_x, org_y):
 	
 	curvature = getCurvatureForPoints(arcLengthList, fx_s, fy_s, smoothing=g_SmoothingForDeltaCurvature)
 
-	return org_x, org_y, arcLengthList, curvature
+	return org_x, org_y, curvature
 
 def genImagesWithDisplayFix(pts, numberOfPixelsPerUnit=1):
 	org_x, org_y = pts[:, 0], pts[:, 1]
@@ -95,7 +95,7 @@ def genImagesWithDisplayFix(pts, numberOfPixelsPerUnit=1):
 	org_x = np.multiply(org_x, 1./float(numberOfPixelsPerUnit))
 	org_y = np.multiply(org_y, 1./float(numberOfPixelsPerUnit))
 	
-	xs, ys, s, curvature = _parameterizeFunctionWRTArcLength(org_x, org_y)
+	xs, ys, curvature = parameterizeFunctionWRTArcLength(org_x, org_y)
 
 	localMaxima = argrelextrema(curvature, np.greater, order=2)
 
