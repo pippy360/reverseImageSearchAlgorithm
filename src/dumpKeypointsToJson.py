@@ -16,7 +16,6 @@ def computeKeypoints(img):
 	#points1.extend(computeKeypoints_internal(r))
 	return points1
 
-
 def computeKeypoints_internal(singleChannelImage):
 	img = singleChannelImage
 	ret,img = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
@@ -48,17 +47,8 @@ def computeKeypoints_internal(singleChannelImage):
 			ret.append( (pt[0], pt[1]) )
 
 		xcoords, ycoords = curvature.getLocalMaximumsOfCurvature( np.array(ret) )
-
-		for i in range(len(xcoords[0])):
-			cv2.circle(img2, ( int(xcoords[0][i]), int(ycoords[0][i]) ), 3, (255, 0, 0), -1)
-			xs = xcoords[0][i]
-			ys = ycoords[0][i]
-			finCnts.append( (xs, ys) )
-	import time		
-	cv2.imwrite('t1'+str(time.time())+".jpg", img2)
 	
 	return finCnts
-
 
 g_pixelVals = [16, 124, 115, 68, 98, 176, 225, 
 55, 50, 53, 129, 19, 57, 160, 143, 237, 75, 164, 
@@ -98,8 +88,8 @@ def recolour(img, gaussW=41):
 	img  = cv2.cvtColor(img2,cv2.COLOR_BGR2GRAY)
 
 	height, width= img.shape
-	for i in range(0, height):             #looping at python speed...
-		for j in range(0, width):     #...
+	for i in range(0, height):
+		for j in range(0, width):
 			val = img[i,j]
 			val = newg_pixelVals[val]
 
@@ -113,7 +103,6 @@ def recolour(img, gaussW=41):
 			img2[i,j] = threeVal
 
 	return img2
-
 
 def dumpKeypoints(img, filename):
 	import json
@@ -131,7 +120,6 @@ def dumpKeypoints(img, filename):
 
 	f = open(filename,'w+')
 	f.write( json.dumps(output) )
-
 
 def main():
 	import os
