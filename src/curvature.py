@@ -77,7 +77,8 @@ def parameterizeFunctionWRTArcLength(inputX, inputY):
 
 	return inputX, inputY, curvature
 
-def genImagesWithDisplayFix(pts, numberOfPixelsPerUnit=1):
+#Get the local maximums of curvature 
+def getLocalMaximumsOfCurvature(pts, numberOfPixelsPerUnit=1):
 	inputX, inputY = pts[:, 0], pts[:, 1]
 
 	#set the scale

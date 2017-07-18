@@ -6,8 +6,6 @@ import sys
 
 
 
-
-
 def computeKeypoints(img):
 	gaussW = 21
 	img = recolour(img, gaussW)
