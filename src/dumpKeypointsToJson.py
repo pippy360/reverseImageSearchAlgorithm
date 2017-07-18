@@ -16,6 +16,7 @@ def computeKeypoints(img):
 	#points1.extend(computeKeypoints_internal(r))
 	return points1
 
+
 def computeKeypoints_internal(singleChannelImage):
 	img = singleChannelImage
 	ret,img = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
@@ -47,8 +48,14 @@ def computeKeypoints_internal(singleChannelImage):
 			ret.append( (pt[0], pt[1]) )
 
 		xcoords, ycoords = curvature.getLocalMaximumsOfCurvature( np.array(ret) )
+
+		for i in range(len(xcoords[0])):
+			xs = xcoords[0][i]
+			ys = ycoords[0][i]
+			finCnts.append( (xs, ys) )
 	
 	return finCnts
+
 
 g_pixelVals = [16, 124, 115, 68, 98, 176, 225, 
 55, 50, 53, 129, 19, 57, 160, 143, 237, 75, 164, 
@@ -104,6 +111,7 @@ def recolour(img, gaussW=41):
 
 	return img2
 
+
 def dumpKeypoints(img, filename):
 	import json
 	kps = computeKeypoints(img)
@@ -120,6 +128,7 @@ def dumpKeypoints(img, filename):
 
 	f = open(filename,'w+')
 	f.write( json.dumps(output) )
+
 
 def main():
 	import os
