@@ -1,7 +1,12 @@
 import numpy as np
 import cv2
-import keypoints as kp
+import curvature
 import sys
+
+
+
+
+
 
 def computeKeypoints(img):
 	gaussW = 21
@@ -44,7 +49,7 @@ def computeKeypoints_internal(singleChannelImage):
 			pt = pnt[0]
 			ret.append( (pt[0], pt[1]) )
 
-		xcoords, ycoords = kp.genImagesWithDisplayFix( np.array(ret) )
+		xcoords, ycoords = curvature.getLocalMaximumsOfCurvature( np.array(ret) )
 
 		for i in range(len(xcoords[0])):
 			cv2.circle(img2, ( int(xcoords[0][i]), int(ycoords[0][i]) ), 3, (255, 0, 0), -1)
