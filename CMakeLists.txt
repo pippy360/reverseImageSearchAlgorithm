@@ -49,7 +49,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 #set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 
-add_executable(runDemo ${SOURCE_FILE} ${TARGET_H})
+add_executable(demo.out ${SOURCE_FILE} ${TARGET_H})
 
 link_directories(lib)
 target_link_libraries(runDemo ${OpenCV_LIBS})
